@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "outDir": "./build",
+    "target": "es2018",
+    "lib": ["es2018", "dom"],
+    "module": "commonjs",
+    "strict": false,
+    "allowSyntheticDefaultImports": true,
+    "rootDir": ".",
+    "baseUrl": ".",
+    "paths": {
+       "~/*": ["src/*"]
+    },
+    "experimentalDecorators": true
+  },
+  "exclude": ["node_modules"]
+}

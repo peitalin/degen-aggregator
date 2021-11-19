@@ -1,0 +1,25 @@
+version: '3.6'
+
+# this docker compsoe file is for local dev only
+# production is run in Google Cloud Run with env variables
+# defined there for the image
+
+services:
+
+  gun-aggregator:
+    image: gcr.io/gm-production-296501/gun-aggregator:latest
+    ports:
+      - 8090:8090
+    environment:
+      - GUN_ENV=development
+      - NODE_ENV=development
+      - PORT=8090 # local dev only
+      - GQL_URL=gun-gateway:4000/graphql
+    restart: always
+    container_name: gun-aggregator
+    volumes:
+      - "./src:/app/src"
+      - "./build:/app/build"
+    command: ["npm", "run", "docker-entrypoint-debug"]
+    # command: ["npm", "run", "start"]
+
