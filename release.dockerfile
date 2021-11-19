@@ -2,7 +2,6 @@
 # that are only needed during development.
 
 FROM node:17-slim
-FROM arm64v8/ubuntu:18.04 as base
 
 
 WORKDIR /app
@@ -46,6 +45,15 @@ ENV PUPPETEER_EXECUTABLE_PATH /usr/bin/chromium
 # RUN echo $(ls /usr/bin/chromium)
 # RUN echo $(which chromium)
 # RUN echo $PUPPETEER_EXECUTABLE_PATH
+
+####### Chromium X Display Bug
+# https://stackoverflow.com/questions/60304251/unable-to-open-x-display-when-trying-to-run-google-chrome-on-centos-rhel-7-5
+RUN apt-get install -y xvfb
+RUN apt-get -y install xorg xvfb gtk2-engines-pixbuf
+RUN apt-get -y install dbus-x11 xfonts-base xfonts-100dpi xfonts-75dpi xfonts-cyrillic xfonts-scalable
+RUN apt-get -y install imagemagick x11-apps
+RUN Xvfb -ac :99 -screen 0 1280x1024x16 &
+RUN export DISPLAY=:99
 
 
 # Add npm packages layer

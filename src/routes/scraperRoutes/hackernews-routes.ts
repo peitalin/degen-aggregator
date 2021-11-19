@@ -27,8 +27,8 @@ const frontPageHackerNewsRoute: Route<Empty, Empty, Empty> = {
     const browser = await puppeteer.launch({
       headless: true,
       // headless: false, // only on desktop/local
-      // executablePath: '/usr/bin/chromium',
-      executablePath: 'google-chrome-stable',
+      executablePath: '/usr/bin/chromium',
+      // executablePath: 'google-chrome-stable',
       args: [
         '--no-sandbox',
         "--disable-gpu",
@@ -42,6 +42,36 @@ const frontPageHackerNewsRoute: Route<Empty, Empty, Empty> = {
     console.log("page: ", page)
     let url = 'https://news.ycombinator.com/news'
     await page.goto(url);
+    await page.waitForSelector("tbody")
+
+    interface LinkHN {
+      title: string
+      url: string
+    }
+
+    let titles = await page.evaluate(async () => {
+
+      let elems = document.querySelectorAll('td.title > a')
+      let titlesRaw: LinkHN[] = []
+
+      elems.forEach(l => {
+        //@ts-ignore
+        let title = l?.innerText
+        //@ts-ignore
+        let url = l?.href
+
+        titlesRaw.push({
+          title: title,
+          url: url,
+        } as LinkHN)
+      })
+
+      return titlesRaw
+    })
+
+    let html = titles.map(t => {
+      return `<p><a href=${t.url}>${t.title}</a></p>`
+    }).join('\n')
 
     browser.close()
 
@@ -49,6 +79,7 @@ const frontPageHackerNewsRoute: Route<Empty, Empty, Empty> = {
     res.send(`
     <div style="margin: 2rem">
       <h2>Hacker News Aggregator</h2>
+      ${html}
     </div>
     `)
   }
