@@ -35,6 +35,7 @@ const frontPageHackerNewsRoute: Route<Empty, Empty, Empty> = {
         "--disable-dev-shm-usage",
         "--disable-setuid-sandbox",
         '--single-process',
+        '--no-zygote',
       ],
     });
 
